@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main
+package internal
 
 import (
 	"errors"
@@ -28,10 +28,10 @@ func TestPut(t *testing.T) {
 	var val interface{}
 	var contains bool
 
-	defer delete(store, key)
+	defer delete(store.m, key)
 
 	// Sanity check
-	_, contains = store[key]
+	_, contains = store.m[key]
 	if contains {
 		t.Error("key/value already exists")
 	}
@@ -42,7 +42,7 @@ func TestPut(t *testing.T) {
 		t.Error(err)
 	}
 
-	val, contains = store[key]
+	val, contains = store.m[key]
 	if !contains {
 		t.Error("create failed")
 	}
@@ -59,7 +59,7 @@ func TestGet(t *testing.T) {
 	var val interface{}
 	var err error
 
-	defer delete(store, key)
+	defer delete(store.m, key)
 
 	// Read a non-thing
 	val, err = Get(key)
@@ -70,7 +70,7 @@ func TestGet(t *testing.T) {
 		t.Error("unexpected error:", err)
 	}
 
-	store[key] = value
+	store.m[key] = value
 
 	val, err = Get(key)
 	if err != nil {
@@ -88,18 +88,18 @@ func TestDelete(t *testing.T) {
 
 	var contains bool
 
-	defer delete(store, key)
+	defer delete(store.m, key)
 
-	store[key] = value
+	store.m[key] = value
 
-	_, contains = store[key]
+	_, contains = store.m[key]
 	if !contains {
 		t.Error("key/value doesn't exist")
 	}
 
 	Delete(key)
 
-	_, contains = store[key]
+	_, contains = store.m[key]
 	if contains {
 		t.Error("Delete failed")
 	}
